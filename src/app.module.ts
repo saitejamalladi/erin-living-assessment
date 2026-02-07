@@ -10,6 +10,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
 import { WorkerModule } from './worker/worker.module';
 import { HealthController } from './health/health.controller';
 import { HealthModule } from './health/health.module';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -17,12 +18,7 @@ import { HealthModule } from './health/health.module';
       pinoHttp: process.env.NODE_ENV === 'production'
         ? {}
         : {
-            transport: {
-              target: 'pino-pretty',
-              options: {
-                singleLine: true,
-              },
-            },
+            level: 'info',
           },
     }),
     MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/erin-living'),
@@ -38,6 +34,7 @@ import { HealthModule } from './health/health.module';
     SchedulerModule,
     WorkerModule,
     HealthModule,
+    QueueModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],
