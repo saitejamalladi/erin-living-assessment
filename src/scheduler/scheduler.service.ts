@@ -28,6 +28,12 @@ export class SchedulerService {
     this.logger.log('Scheduler started - will check for due notifications every 15 minutes');
   }
 
+  // Manual trigger for testing purposes
+  async triggerProcessDueNotifications(): Promise<void> {
+    this.logger.log('Manually triggering due notifications processing');
+    await this.processDueNotifications();
+  }
+
   private async processDueNotifications(): Promise<void> {
     try {
       const now = new Date();
