@@ -18,12 +18,7 @@ import { QueueModule } from './queue/queue.module';
       pinoHttp: process.env.NODE_ENV === 'production'
         ? {}
         : {
-            transport: {
-              target: 'pino-pretty',
-              options: {
-                singleLine: true,
-              },
-            },
+            level: 'info',
           },
     }),
     MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/erin-living'),

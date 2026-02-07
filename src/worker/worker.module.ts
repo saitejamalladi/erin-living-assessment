@@ -7,6 +7,9 @@ import { User, UserSchema } from '../user/user.schema';
 
 @Module({
   imports: [
+    BullModule.registerQueue({
+      name: 'notifications',
+    }),
     MongooseModule.forFeature([
       { name: Notification.name, schema: NotificationSchema },
       { name: User.name, schema: UserSchema },
