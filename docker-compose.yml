@@ -11,6 +11,7 @@ services:
       - MONGO_URI=mongodb://root:password@mongo:27017/erin-living?authSource=admin
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - REDIS_PASSWORD=password
     depends_on:
       mongo:
         condition: service_healthy

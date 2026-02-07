@@ -9,6 +9,11 @@ import { SchedulerService } from './scheduler.service';
     MongooseModule.forFeature([{ name: Notification.name, schema: NotificationSchema }]),
     BullModule.registerQueue({
       name: 'notifications',
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+        password: process.env.REDIS_PASSWORD,
+      },
     }),
   ],
   providers: [SchedulerService],

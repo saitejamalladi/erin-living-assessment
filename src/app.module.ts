@@ -14,20 +14,23 @@ import { HealthModule } from './health/health.module';
 @Module({
   imports: [
     LoggerModule.forRoot({
-      pinoHttp: {
-        transport: {
-          target: 'pino-pretty',
-          options: {
-            singleLine: true,
+      pinoHttp: process.env.NODE_ENV === 'production'
+        ? {}
+        : {
+            transport: {
+              target: 'pino-pretty',
+              options: {
+                singleLine: true,
+              },
+            },
           },
-        },
-      },
     }),
     MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/erin-living'),
     BullModule.forRoot({
       connection: {
         host: process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379'),
+        password: process.env.REDIS_PASSWORD,
       },
     }),
     UserModule,
