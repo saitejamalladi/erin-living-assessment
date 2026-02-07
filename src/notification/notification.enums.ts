@@ -7,4 +7,5 @@ export enum NotificationStatus {
   PROCESSING = 'processing',
   SENT = 'sent',
   FAILED = 'failed',
+  SCHEDULED = 'scheduled',
 }
