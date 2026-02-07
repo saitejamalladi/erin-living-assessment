@@ -9,10 +9,14 @@ export class HealthController {
   @Get()
   async checkHealth() {
     try {
-      await this.connection.db.admin().ping();
-      return { status: 'ok', database: 'connected' };
+      if (this.connection.db) {
+        await this.connection.db.admin().ping();
+        return { status: 'ok', database: 'connected' };
+      } else {
+        return { status: 'error', database: 'disconnected', error: 'Database not available' };
+      }
     } catch (error) {
-      return { status: 'error', database: 'disconnected', error: error.message };
+      return { status: 'error', database: 'disconnected', error: error instanceof Error ? error.message : 'Unknown error' };
     }
   }
 }

@@ -7,19 +7,19 @@ export type NotificationDocument = Notification & Document;
 @Schema({ timestamps: true })
 export class Notification {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userId: Types.ObjectId;
+  userId!: Types.ObjectId;
 
   @Prop({ type: String, enum: NotificationType, required: true })
-  type: NotificationType;
+  type!: NotificationType;
 
   @Prop({ type: String, enum: NotificationStatus, required: true, default: NotificationStatus.PENDING })
-  status: NotificationStatus;
+  status!: NotificationStatus;
 
   @Prop({ required: true })
-  nextRunAt: Date;
+  nextRunAt!: Date;
 
   @Prop({ type: Object })
-  audit: Record<string, any>;
+  audit!: Record<string, any>;
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
