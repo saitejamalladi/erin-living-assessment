@@ -47,12 +47,17 @@ export class UserService {
   }
 
   private calculateNextBirthday(dateOfEvent: string): Date {
-    const now = DateTime.now();
-    const eventDate = DateTime.fromISO(dateOfEvent);
-    let nextBirthday = DateTime.fromObject({ year: now.year, month: eventDate.month, day: eventDate.day });
+    const now = DateTime.now().setZone('UTC');
+    const [yearStr, monthStr, dayStr] = dateOfEvent.split('-');
+    const month = parseInt(monthStr, 10);
+    const day = parseInt(dayStr, 10);
+    let year = now.year;
+    let nextBirthday = DateTime.fromObject({ year, month, day }, { zone: 'UTC' });
 
-    if (nextBirthday < now) {
-      nextBirthday = nextBirthday.plus({ years: 1 });
+    // If the date is invalid (e.g., Feb 29 in non-leap year), find the next valid year
+    while (!nextBirthday.isValid || nextBirthday < now) {
+      year++;
+      nextBirthday = DateTime.fromObject({ year, month, day }, { zone: 'UTC' });
     }
 
     return nextBirthday.toJSDate();

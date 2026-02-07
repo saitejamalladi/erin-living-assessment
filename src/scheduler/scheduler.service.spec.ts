@@ -123,5 +123,31 @@ describe('SchedulerService', () => {
       expect(mockFindOneAndUpdate).toHaveBeenCalled();
       expect(mockAdd).not.toHaveBeenCalled();
     });
+
+    it('should handle errors in processDueNotifications', async () => {
+      const mockFind = jest.fn().mockReturnValue({
+        exec: jest.fn().mockRejectedValue(new Error('Database error')),
+      });
+      notificationModel.find = mockFind;
+
+      // Should not throw, just log error
+      await expect((service as any).processDueNotifications()).resolves.not.toThrow();
+    });
+
+    it('should handle errors in processNotification', async () => {
+      const mockFindOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockNotification),
+      });
+      notificationModel.findOneAndUpdate = mockFindOneAndUpdate;
+
+      const mockAdd = jest.fn().mockRejectedValue(new Error('Queue error'));
+      notificationsQueue.add = mockAdd;
+
+      // Access private method for testing
+      await (service as any).processNotification(mockNotification);
+
+      // Should not throw, just log error
+      expect(mockAdd).toHaveBeenCalled();
+    });
   });
 });

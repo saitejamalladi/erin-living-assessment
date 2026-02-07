@@ -120,6 +120,48 @@ describe('WorkerService', () => {
       });
     });
 
+    it('should process non-birthday notification successfully', async () => {
+      const job = {
+        id: 'job-id',
+        data: {
+          notificationId: 'notification-id',
+          userId: 'user-id',
+          type: 'anniversary', // Non-birthday type
+        },
+      };
+
+      const mockFindById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockNotification),
+      });
+      notificationModel.findById = mockFindById;
+
+      const mockFindByIdUser = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockUser),
+      });
+      userModel.findById = mockFindByIdUser;
+
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        status: 200,
+      });
+
+      const mockFindByIdAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockNotification),
+      });
+      notificationModel.findByIdAndUpdate = mockFindByIdAndUpdate;
+
+      await service.process(job as any);
+
+      expect(mockFindByIdAndUpdate).toHaveBeenCalledWith('notification-id', {
+        status: NotificationStatus.SCHEDULED,
+        nextRunAt: expect.any(Date), // Should be 1 year from now
+        audit: expect.objectContaining({
+          lastSentAt: expect.any(Date),
+          sentCount: 1,
+        }),
+      });
+    });
+
     it('should handle notification not found', async () => {
       const job = {
         id: 'job-id',
