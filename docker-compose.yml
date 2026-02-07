@@ -12,6 +12,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=password
+      - REQUEST_BIN_URL=https://webhook.site/32a777b8-de58-466c-86a9-fd82ef449ee7
     depends_on:
       mongo:
         condition: service_healthy
