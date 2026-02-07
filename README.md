@@ -68,10 +68,11 @@ docker-compose up -d mongo redis
 
 ### 4. Configure Environment
 
-Copy the `.env` file and adjust settings if needed:
+Copy the environment template and adjust settings:
 
 ```bash
-cp .env.example .env  # if exists, otherwise use provided .env
+cp .env.example .env
+# Edit .env with your database credentials and webhook URL
 ```
 
 ### 5. Run the Application
@@ -107,25 +108,132 @@ npm run test:e2e
 
 ## 🐳 Docker Deployment
 
-### Development
+### Prerequisites
+
+- Docker Engine 20.10+
+- Docker Compose 2.0+
+- At least 2GB free RAM
+- Ports 3000, 27017, 6379, 6380 available
+
+### Environment Setup
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd erin-living-assessment
+   ```
+
+2. **Configure environment variables**:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your settings
+   ```
+
+3. **Start infrastructure services**:
+   ```bash
+   # Start MongoDB and Redis
+   docker-compose up -d mongo redis
+   ```
+
+### Development Deployment
 
 ```bash
-# Start all services
+# Start all services in development mode
+npm run docker:dev
+
+# Or manually:
 docker-compose up
 
-# Start in background
-docker-compose up -d
+# View application logs
+npm run docker:logs
 
-# View logs
-docker-compose logs -f app
+# Stop services
+npm run docker:down
 ```
 
-### Production
+### Production Deployment
 
 ```bash
-# Build and run
-docker-compose -f docker-compose.yml up --build
+# Build and start production containers
+npm run docker:prod
+
+# Or manually:
+docker-compose up --build -d
+
+# Check service health
+curl http://localhost:3000/health
 ```
+
+### Docker Commands
+
+```bash
+# Build images
+npm run docker:build
+
+# View logs for specific service
+docker-compose logs -f app
+docker-compose logs -f mongo
+docker-compose logs -f redis
+
+# Restart services
+docker-compose restart
+
+# Clean up (removes containers, networks, volumes)
+docker-compose down -v
+```
+
+### Production Configuration
+
+The production setup includes:
+- **Health checks**: Automatic service monitoring
+- **Restart policies**: Services restart on failure
+- **Logging**: JSON logging with size limits (10MB, 3 files)
+- **Security**: Non-root user in containers
+- **Multi-stage builds**: Optimized Docker images
+
+### Troubleshooting
+
+**Port conflicts**:
+```bash
+# Check what's using ports
+lsof -i :3000
+lsof -i :27017
+lsof -i :6379
+
+# Kill process using port
+kill -9 <PID>
+```
+
+**Container issues**:
+```bash
+# Check container status
+docker-compose ps
+
+# View container logs
+docker-compose logs <service-name>
+
+# Restart specific service
+docker-compose restart <service-name>
+```
+
+**Database connection**:
+```bash
+# Connect to MongoDB
+docker-compose exec mongo mongosh -u root -p password
+
+# Test Redis connection
+docker-compose exec redis redis-cli -a password ping
+```
+
+### Access Points
+
+- **Web Interface**: http://localhost:3000
+- **API Documentation**: http://localhost:3000/api
+- **Health Check**: http://localhost:3000/health
+- **MongoDB**: localhost:27017 (root/password)
+- **Redis**: localhost:6379/6380 (password: password)
+
+### Database Schema
 
 The application uses MongoDB with the following collections:
 - `users`: User profiles with timezone information
