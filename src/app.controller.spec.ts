@@ -15,10 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return HTML content', () => {
-      const result = appController.getIndex();
-      expect(result).toContain('<!DOCTYPE html>');
-      expect(result).toContain('Erin Living Assessment');
+    it('should return "Hello World!"', () => {
+      expect(appController.getHello()).toBe('Hello World!');
     });
   });
 });

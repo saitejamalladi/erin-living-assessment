@@ -12,11 +12,13 @@ import { WorkerModule } from './worker/worker.module';
 import { HealthController } from './health/health.controller';
 import { HealthModule } from './health/health.module';
 import { QueueModule } from './queue/queue.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'public'),
+      rootPath: join(__dirname, '..', 'public'),
       serveRoot: '/',
     }),
     LoggerModule.forRoot({
@@ -45,7 +47,7 @@ import { QueueModule } from './queue/queue.module';
     HealthModule,
     QueueModule,
   ],
-  controllers: [HealthController],
-  providers: [],
+  controllers: [AppController, HealthController],
+  providers: [AppService],
 })
 export class AppModule {}
