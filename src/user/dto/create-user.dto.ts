@@ -3,16 +3,16 @@ import { IsString, IsNotEmpty, IsDateString } from 'class-validator';
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  firstName!: string;
 
   @IsString()
   @IsNotEmpty()
-  lastName: string;
+  lastName!: string;
 
   @IsString()
   @IsNotEmpty()
-  location: string;
+  location!: string;
 
   @IsDateString()
-  dateOfEvent: string;
+  dateOfEvent!: string;
 }

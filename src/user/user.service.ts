@@ -33,6 +33,7 @@ export class UserService {
     }
 
     const updatedUser = await this.userModel.findByIdAndUpdate(id, { ...updateUserDto, dateOfEvent: new Date(updateUserDto.dateOfEvent || user.dateOfEvent) }, { new: true });
+    if (!updatedUser) throw new NotFoundException('User not found');
     await this.notificationService.updateNotification(updatedUser._id, nextRunAt);
     return updatedUser;
   }
