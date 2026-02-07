@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BullModule } from '@nestjs/bullmq';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
@@ -11,11 +12,13 @@ import { WorkerModule } from './worker/worker.module';
 import { HealthController } from './health/health.controller';
 import { HealthModule } from './health/health.module';
 import { QueueModule } from './queue/queue.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'public'),
+      rootPath: join(__dirname, '..', 'public'),
       serveRoot: '/',
     }),
     LoggerModule.forRoot({
@@ -26,12 +29,16 @@ import { QueueModule } from './queue/queue.module';
           },
     }),
     MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/erin-living'),
-    BullModule.forRoot({
-      connection: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379'),
-        password: process.env.REDIS_PASSWORD,
-      },
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST', 'localhost'),
+          port: configService.get<number>('REDIS_PORT', 6379),
+          password: configService.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
     }),
     UserModule,
     NotificationModule,
@@ -40,7 +47,7 @@ import { QueueModule } from './queue/queue.module';
     HealthModule,
     QueueModule,
   ],
-  controllers: [HealthController],
-  providers: [],
+  controllers: [AppController, HealthController],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -1,98 +1,275 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Erin Living Assessment - Event Notification Scheduler
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A scalable, event-driven birthday notification system built with NestJS, MongoDB, and Redis. This application automatically schedules and sends birthday notifications for users based on their timezone and date of birth.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Features
 
-## Description
+- **User Management**: Create, update, and delete user profiles with timezone support
+- **Automatic Scheduling**: Birthday notifications scheduled based on user's local time
+- **Queue-Based Processing**: Asynchronous job processing with BullMQ and Redis
+- **Timezone Aware**: Handles different timezones correctly using Luxon
+- **RESTful API**: Complete REST API with validation and error handling
+- **Web Interface**: Simple HTML form for user creation
+- **Comprehensive Testing**: 40+ unit tests with 70%+ coverage
+- **Docker Ready**: Full containerization with Docker Compose
+- **API Documentation**: Swagger/OpenAPI documentation
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🏗️ Architecture
 
-## Project setup
+The system follows an event-driven producer-consumer architecture:
 
-```bash
-$ npm install
-```
+- **Scheduler (Producer)**: Runs every 15 minutes to find due notifications and queue jobs
+- **Worker (Consumer)**: Processes queued jobs to send HTTP notifications
+- **API**: REST endpoints for user and notification management
+- **Database**: MongoDB for user profiles and notification schedules
+- **Queue**: Redis/BullMQ for job queuing and processing
 
-## Compile and run the project
+## 🛠️ Tech Stack
 
-```bash
-# development
-$ npm run start
+| Component | Technology | Version |
+|-----------|------------|---------|
+| Framework | NestJS | 10.x |
+| Language | TypeScript | 5.x |
+| Database | MongoDB | 7.x |
+| Queue | Redis/BullMQ | 5.x |
+| Date/Time | Luxon | 3.x |
+| Validation | class-validator | 0.14.x |
+| Logging | Pino | 8.x |
+| Testing | Jest | 29.x |
+| Container | Docker | 24.x |
 
-# watch mode
-$ npm run start:dev
+## 📋 Prerequisites
 
-# production mode
-$ npm run start:prod
-```
+- Node.js 18+ and npm
+- Docker and Docker Compose
+- Git
 
-## Run tests
+## 🚀 Quick Start
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 1. Clone the Repository
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+git clone <repository-url>
+cd erin-living-assessment
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 2. Install Dependencies
 
-## Resources
+```bash
+npm install
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 3. Start Infrastructure
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+# Start MongoDB and Redis
+docker-compose up -d mongo redis
+```
 
-## Support
+### 4. Configure Environment
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Copy the `.env` file and adjust settings if needed:
 
-## Stay in touch
+```bash
+cp .env.example .env  # if exists, otherwise use provided .env
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 5. Run the Application
 
-## License
+```bash
+# Development mode
+npm run start:dev
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Production build
+npm run build
+npm run start:prod
+```
+
+### 6. Access the Application
+
+- **Web Interface**: http://localhost:3000
+- **API Documentation**: http://localhost:3000/api
+- **Health Check**: http://localhost:3000/health
+
+## 📖 API Usage
+
+### Create a User
+
+```bash
+curl -X POST http://localhost:3000/user \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "John",
+    "lastName": "Doe",
+    "location": "America/New_York",
+    "dateOfEvent": "1990-01-01"
+  }'
+```
+
+### Update a User
+
+```bash
+curl -X PUT http://localhost:3000/user/{userId} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "Jane",
+    "lastName": "Doe"
+  }'
+```
+
+### Delete a User
+
+```bash
+curl -X DELETE http://localhost:3000/user/{userId}
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm run test:cov
+
+# Run e2e tests
+npm run test:e2e
+```
+
+## 🐳 Docker Deployment
+
+### Development
+
+```bash
+# Start all services
+docker-compose up
+
+# Start in background
+docker-compose up -d
+
+# View logs
+docker-compose logs -f app
+```
+
+### Production
+
+```bash
+# Build and run
+docker-compose -f docker-compose.yml up --build
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `NODE_ENV` | `production` | Environment mode |
+| `PORT` | `3000` | Application port |
+| `MONGO_URI` | `mongodb://localhost:27017/erin-living` | MongoDB connection string |
+| `REDIS_HOST` | `localhost` | Redis host |
+| `REDIS_PORT` | `6380` | Redis port (6380 for local dev, 6379 in Docker) |
+| `REDIS_PASSWORD` | `password` | Redis password |
+
+### Database Configuration
+
+The application uses MongoDB with the following collections:
+- `users`: User profiles with timezone information
+- `notifications`: Scheduled notification jobs
+
+## 📊 Monitoring
+
+### Health Checks
+
+```bash
+curl http://localhost:3000/health
+```
+
+Response:
+```json
+{
+  "status": "ok",
+  "database": "connected"
+}
+```
+
+### Logs
+
+The application uses structured JSON logging with Pino. In development:
+```bash
+npm run start:dev  # Logs to console
+```
+
+In production, logs are JSON formatted for log aggregation tools.
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+#### Redis Connection Failed
+**Error**: `ECONNREFUSED` when connecting to Redis
+
+**Solution**:
+- Ensure Redis is running: `docker-compose up -d redis`
+- Check Redis port in `.env` (6380 for local, 6379 in Docker)
+- Verify Redis password matches
+
+#### MongoDB Connection Failed
+**Error**: Database connection timeout
+
+**Solution**:
+- Start MongoDB: `docker-compose up -d mongo`
+- Check connection string in `.env`
+- Ensure MongoDB is healthy: `docker-compose ps`
+
+#### Port Already in Use
+**Error**: `EADDRINUSE` on port 3000
+
+**Solution**:
+- Kill existing process: `lsof -ti:3000 | xargs kill -9`
+- Change port in `.env`: `PORT=3001`
+
+#### Static Files Not Serving
+**Error**: HTML form not loading at root URL
+
+**Solution**:
+- Ensure `public/index.html` exists
+- Check ServeStaticModule configuration in `app.module.ts`
+- Restart the application
+
+### Debug Mode
+
+Enable debug logging:
+```bash
+DEBUG=* npm run start:dev
+```
+
+## 📚 API Documentation
+
+Complete API documentation is available via Swagger at `/api` when the application is running.
+
+Key endpoints:
+- `POST /user` - Create user
+- `PUT /user/:id` - Update user
+- `DELETE /user/:id` - Delete user
+- `POST /scheduler/trigger` - Manually trigger scheduler
+- `GET /health` - Health check
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit changes: `git commit -am 'Add your feature'`
+4. Push to branch: `git push origin feature/your-feature`
+5. Create a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [NestJS](https://nestjs.com/)
+- Date handling by [Luxon](https://moment.github.io/luxon/)
+- Queue management by [BullMQ](https://docs.bullmq.io/)
+- Testing with [Jest](https://jestjs.io/)
