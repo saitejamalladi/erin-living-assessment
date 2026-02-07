@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { NotificationModule } from './notification/notification.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { WorkerModule } from './worker/worker.module';
+import { HealthController } from './health/health.controller';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -21,8 +23,9 @@ import { WorkerModule } from './worker/worker.module';
     NotificationModule,
     SchedulerModule,
     WorkerModule,
+    HealthModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [AppService],
 })
 export class AppModule {}
