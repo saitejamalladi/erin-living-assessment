@@ -35,6 +35,7 @@ WORKDIR /app
 
 # Copy built app from build stage
 COPY --from=build /app/dist ./dist
+COPY --from=build /app/public ./public
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 
