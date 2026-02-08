@@ -50,7 +50,6 @@ We have chosen a stack that balances rapid development with "Enterprise-Grade" p
 
 We utilize MongoDB's flexibility while enforcing strict schemas via Mongoose to ensure data integrity.
 
-![alt text](images/database-schema.png)
 ```mermaid
 erDiagram
     USER ||--o{ NOTIFICATION : "has many"
@@ -82,8 +81,6 @@ erDiagram
 ### 4.1 User Onboarding (Creation Flow)
 
 This flow handles the complexity of Timezone calculation *upfront*, so the scheduler doesn't have to perform heavy date math.
-
-![alt text](images/user-onboarding.png)
 
 ```mermaid
 sequenceDiagram
@@ -118,7 +115,6 @@ sequenceDiagram
 
 This process runs every 15 minutes. It handles the "Recovery" requirement (catching up on missed tasks) and the "Concurrency" requirement (locking).
 
-![alt text](images/producer.png)
 ```mermaid
 sequenceDiagram
     autonumber
