@@ -28,7 +28,32 @@ The system follows an event-driven producer-consumer architecture:
 ## � System Flows
 
 ### User Onboarding Flow
-![User Onboarding](docs/images/user-onboarding.png)
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client
+    participant API as User Controller
+    participant Service as User Service
+    participant UserRepo as User Collection
+    participant NotifRepo as Notification Collection
+
+    Client->>API: POST /user <br/>{ name, dateOfEvent, timezone, type }
+    API->>Service: createUser(dto)
+    
+    Note right of Service: <b>Step 1: Save Profile</b>
+    Service->>UserRepo: create({ profileData })
+    UserRepo-->>Service: userDoc
+    
+    Note right of Service: <b>Step 2: Calculate Schedule</b><br/>Convert 9AM local time to UTC<br/>based on user's timezone.
+    Service->>Service: calculateNextRunAt(dateOfEvent, timezone)
+    
+    Note right of Service: <b>Step 3: Save Schedule</b>
+    Service->>NotifRepo: create({ userId, nextRunAt, status: 'SCHEDULED' })
+    
+    Service-->>API: Success
+    API-->>Client: 201 Created
+
+```
 
 ### Scheduler (Producer) Flow
 ![Scheduler Flow](docs/images/producer.png)
