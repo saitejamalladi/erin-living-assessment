@@ -151,8 +151,8 @@ To satisfy the "Extensibility" requirement, we separate identity from scheduling
 
 * **Timezone:** Invalid IANA timezones in the input will be rejected by the API validation pipe.
 * **Network:** Redis and MongoDB are available within the Docker network via the service names defined in `docker-compose.yml`.
-
+* **Leap Year Handling:** Current logic adds 1 year (365 days). Future domain logic needed for Feb 29th handling.
+  
 ## 7. Future Enhancements
 
 * **Anniversary Messages:** System supports this by allowing the API to accept `notificationType: 'ANNIVERSARY'`.
-* **Leap Year Handling:** Current logic adds 1 year (365 days). Future domain logic needed for Feb 29th handling.
