@@ -150,7 +150,6 @@ sequenceDiagram
 
 This component handles the external communication and the "Recurrence" logic (scheduling next year).
 
-![alt text](images/worker.png)
 ```mermaid
 sequenceDiagram
     autonumber
