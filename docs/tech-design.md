@@ -8,37 +8,7 @@ Here is the updated **`tech-design.md`** file with the **Tech Stack** section ad
 
 The system follows a **Event-Driven, Producer-Consumer Architecture**. This decouples the "identification of work" (finding users to notify) from the "execution of work" (sending HTTP requests), ensuring high scalability and fault tolerance.
 
-```mermaid
-graph TD
-    subgraph "External World"
-        Client[API Client / User]
-        ReqBin[RequestBin (External Service)]
-    end
-
-    subgraph "Docker Container Network"
-        subgraph "NestJS Application"
-            API[API Module]
-            Cron[Scheduler Module (Producer)]
-            Worker[Worker Module (Consumer)]
-        end
-
-        DB[(MongoDB)]
-        Queue[(Redis / BullMQ)]
-    end
-
-    %% Connections
-    Client -->|HTTP POST/PUT/DEL| API
-    API -->|Read/Write| DB
-    
-    Cron -->|1. Poll & Lock| DB
-    Cron -->|2. Push Job| Queue
-    
-    Queue -->|3. Pop Job| Worker
-    Worker -->|4. Read User Info| DB
-    Worker -->|5. Send Request| ReqBin
-    Worker -->|6. Update Next Run| DB
-
-```
+![alt text](images/architecture.png)
 
 ### Architectural Decisions
 
@@ -80,6 +50,7 @@ We have chosen a stack that balances rapid development with "Enterprise-Grade" p
 
 We utilize MongoDB's flexibility while enforcing strict schemas via Mongoose to ensure data integrity.
 
+![alt text](images/database-schema.png)
 ```mermaid
 erDiagram
     USER ||--o{ NOTIFICATION : "has many"
@@ -111,6 +82,8 @@ erDiagram
 ### 4.1 User Onboarding (Creation Flow)
 
 This flow handles the complexity of Timezone calculation *upfront*, so the scheduler doesn't have to perform heavy date math.
+
+![alt text](images/user-onboarding.png)
 
 ```mermaid
 sequenceDiagram
@@ -145,6 +118,7 @@ sequenceDiagram
 
 This process runs every 15 minutes. It handles the "Recovery" requirement (catching up on missed tasks) and the "Concurrency" requirement (locking).
 
+![alt text](images/producer.png)
 ```mermaid
 sequenceDiagram
     autonumber
@@ -180,6 +154,7 @@ sequenceDiagram
 
 This component handles the external communication and the "Recurrence" logic (scheduling next year).
 
+![alt text](images/worker.png)
 ```mermaid
 sequenceDiagram
     autonumber
@@ -194,21 +169,20 @@ sequenceDiagram
     DB-->>Worker: { firstName, lastName }
     
     alt User Exists
-        Worker->>Ext: POST https://webhook.site/32a777b8-de58-466c-86a9-fd82ef449ee7 <br/>{message: "Hey {name}, it's your {notificationType}"}
+        Worker->>Ext: POST https://requestbin.com
         
         alt External API Success
-            Note right of Worker: <b>Recurrence Logic:</b><br/>Add 1 year to nextRunAt (handle Feb 29 as Feb 28).<br/>Release lock.
+            Note right of Worker: <b>Recurrence Logic:</b><br/>Add 1 year to nextRunAt.<br/>Release lock.
             Worker->>DB: updateOne({ <br/>nextRunAt: +1 Year, <br/>status: 'SCHEDULED' <br/>})
             Worker->>Queue: Job Completed
         else External API Failed
             Worker->>Queue: Throw Error (Triggers Retry)
-            Note right of Queue: BullMQ retries using fixed time strategy (5 seconds interval, max 3 retries). After max retries, set status to 'FAILED' and log.
+            Note right of Queue: BullMQ retries 
         end
         
     else User Not Found (Deleted)
         Worker->>Queue: Job Discarded
     end
-
 ```
 
 ## 5. Implementation Clarifications

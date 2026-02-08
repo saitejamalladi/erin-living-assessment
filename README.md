@@ -27,7 +27,16 @@ The system follows an event-driven producer-consumer architecture:
 
 ## � System Flows
 
-Detailed sequence diagrams illustrating user creation, notification scheduling, and job processing are available in the [Technical Design Document](docs/tech-design.md).
+### User Onboarding Flow
+![User Onboarding](docs/images/user-onboarding.png)
+
+### Scheduler (Producer) Flow
+![Scheduler Flow](docs/images/producer.png)
+
+### Worker (Consumer) Flow
+![Worker Flow](docs/images/worker.png)
+
+*For more details and interactive diagrams, refer to the [Technical Design Document](docs/tech-design.md).*
 
 ## �🛠️ Tech Stack
 
