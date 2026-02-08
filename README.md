@@ -17,7 +17,7 @@ A scalable, event-driven birthday notification system built with NestJS, MongoDB
 ## 🏗️ Architecture
 
 The system follows an event-driven producer-consumer architecture:
-![alt text](architecture.png)
+![alt text](docs/images/architecture.png)
 
 - **Scheduler (Producer)**: Runs every 15 minutes to find due notifications and queue jobs
 - **Worker (Consumer)**: Processes queued jobs to send HTTP notifications
@@ -25,7 +25,11 @@ The system follows an event-driven producer-consumer architecture:
 - **Database**: MongoDB for user profiles and notification schedules
 - **Queue**: Redis/BullMQ for job queuing and processing
 
-## 🛠️ Tech Stack
+## � System Flows
+
+Detailed sequence diagrams illustrating user creation, notification scheduling, and job processing are available in the [Technical Design Document](docs/tech-design.md).
+
+## �🛠️ Tech Stack
 
 | Component | Technology | Version |
 |-----------|------------|---------|
