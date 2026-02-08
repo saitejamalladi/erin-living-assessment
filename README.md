@@ -31,17 +31,17 @@ Detailed sequence diagrams illustrating user creation, notification scheduling, 
 
 ## �🛠️ Tech Stack
 
-| Component | Technology | Version |
+| Component | Technology |
 |-----------|------------|---------|
-| Framework | NestJS | 10.x |
-| Language | TypeScript | 5.x |
-| Database | MongoDB | 7.x |
-| Queue | Redis/BullMQ | 5.x |
-| Date/Time | Luxon | 3.x |
-| Validation | class-validator | 0.14.x |
-| Logging | Pino | 8.x |
-| Testing | Jest | 29.x |
-| Container | Docker | 24.x |
+| Framework | NestJS |
+| Language | TypeScript |
+| Database | MongoDB |
+| Queue | Redis/BullMQ |
+| Date/Time | Luxon |
+| Validation | class-validator |
+| Logging | Pino |
+| Testing | Jest |
+| Container | Docker |
 
 ## 📋 Prerequisites
 
