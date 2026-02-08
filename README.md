@@ -28,6 +28,7 @@ The system follows an event-driven producer-consumer architecture:
 ## � System Flows
 
 ### User Onboarding Flow
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -56,10 +57,67 @@ sequenceDiagram
 ```
 
 ### Scheduler (Producer) Flow
-![Scheduler Flow](docs/images/producer.png)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Cron as Node-Cron
+    participant Prod as Producer Service
+    participant DB as MongoDB
+    participant Queue as BullMQ (Redis)
+
+    Note over Cron: Triggered every 15 mins
+
+    Cron->>Prod: handleCron()
+    
+    Note right of Prod: <b>Recovery Query:</b><br/>Finds tasks where time <= NOW.<br/>Catches up even if service was down 24h.
+    Prod->>DB: find({ <br/>status: 'SCHEDULED', <br/>nextRunAt: { $lte: new Date() } <br/>})
+    DB-->>Prod: Returns [Notif A, Notif B]
+    
+    loop For Each Notification
+        Note right of Prod: <b>Atomic Lock:</b><br/>Prevents double-processing.
+        Prod->>DB: updateOne(<br/>{ _id: A, status: 'SCHEDULED' },<br/>{ $set: { status: 'PROCESSING' } }<br/>)
+        
+        alt Lock Successful
+            Prod->>Queue: addJob('notification-job', { notifId, userId })
+        else Lock Failed
+            Prod->>Prod: Skip (Another worker took it)
+        end
+    end
+
+```
 
 ### Worker (Consumer) Flow
-![Worker Flow](docs/images/worker.png)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Queue as BullMQ
+    participant Worker as Consumer Service
+    participant DB as MongoDB
+    participant Ext as RequestBin (API)
+
+    Queue->>Worker: Process Job { notifId, userId }
+    
+    Worker->>DB: findUser(userId)
+    DB-->>Worker: { firstName, lastName }
+    
+    alt User Exists
+        Worker->>Ext: POST https://requestbin.com
+        
+        alt External API Success
+            Note right of Worker: <b>Recurrence Logic:</b><br/>Add 1 year to nextRunAt.<br/>Release lock.
+            Worker->>DB: updateOne({ <br/>nextRunAt: +1 Year, <br/>status: 'SCHEDULED' <br/>})
+            Worker->>Queue: Job Completed
+        else External API Failed
+            Worker->>Queue: Throw Error (Triggers Retry)
+            Note right of Queue: BullMQ retries 
+        end
+        
+    else User Not Found (Deleted)
+        Worker->>Queue: Job Discarded
+    end
+```
 
 *For more details and interactive diagrams, refer to the [Technical Design Document](docs/tech-design.md).*
 
