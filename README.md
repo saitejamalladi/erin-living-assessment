@@ -17,6 +17,7 @@ A scalable, event-driven birthday notification system built with NestJS, MongoDB
 ## 🏗️ Architecture
 
 The system follows an event-driven producer-consumer architecture:
+![alt text](docs/images/architecture.png)
 
 - **Scheduler (Producer)**: Runs every 15 minutes to find due notifications and queue jobs
 - **Worker (Consumer)**: Processes queued jobs to send HTTP notifications
@@ -24,7 +25,20 @@ The system follows an event-driven producer-consumer architecture:
 - **Database**: MongoDB for user profiles and notification schedules
 - **Queue**: Redis/BullMQ for job queuing and processing
 
-## 🛠️ Tech Stack
+## � System Flows
+
+### User Onboarding Flow
+![User Onboarding](docs/images/user-onboarding.png)
+
+### Scheduler (Producer) Flow
+![Scheduler Flow](docs/images/producer.png)
+
+### Worker (Consumer) Flow
+![Worker Flow](docs/images/worker.png)
+
+*For more details and interactive diagrams, refer to the [Technical Design Document](docs/tech-design.md).*
+
+## �🛠️ Tech Stack
 
 | Component | Technology | Version |
 |-----------|------------|---------|
@@ -150,88 +164,6 @@ npm run docker:logs
 # Stop services
 npm run docker:down
 ```
-
-### Production Deployment
-
-```bash
-# Build and start production containers
-npm run docker:prod
-
-# Or manually:
-docker-compose up --build -d
-
-# Check service health
-curl http://localhost:3000/health
-```
-
-### Docker Commands
-
-```bash
-# Build images
-npm run docker:build
-
-# View logs for specific service
-docker-compose logs -f app
-docker-compose logs -f mongo
-docker-compose logs -f redis
-
-# Restart services
-docker-compose restart
-
-# Clean up (removes containers, networks, volumes)
-docker-compose down -v
-```
-
-### Production Configuration
-
-The production setup includes:
-- **Health checks**: Automatic service monitoring
-- **Restart policies**: Services restart on failure
-- **Logging**: JSON logging with size limits (10MB, 3 files)
-- **Security**: Non-root user in containers
-- **Multi-stage builds**: Optimized Docker images
-
-### Troubleshooting
-
-**Port conflicts**:
-```bash
-# Check what's using ports
-lsof -i :3000
-lsof -i :27017
-lsof -i :6379
-
-# Kill process using port
-kill -9 <PID>
-```
-
-**Container issues**:
-```bash
-# Check container status
-docker-compose ps
-
-# View container logs
-docker-compose logs <service-name>
-
-# Restart specific service
-docker-compose restart <service-name>
-```
-
-**Database connection**:
-```bash
-# Connect to MongoDB
-docker-compose exec mongo mongosh -u root -p password
-
-# Test Redis connection
-docker-compose exec redis redis-cli -a password ping
-```
-
-### Access Points
-
-- **Web Interface**: http://localhost:3000
-- **API Documentation**: http://localhost:3000/api
-- **Health Check**: http://localhost:3000/health
-- **MongoDB**: localhost:27017 (root/password)
-- **Redis**: localhost:6379/6380 (password: password)
 
 ### Database Schema
 
