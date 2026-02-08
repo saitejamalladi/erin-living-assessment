@@ -41,7 +41,7 @@ The system follows an event-driven producer-consumer architecture:
 ## �🛠️ Tech Stack
 
 | Component | Technology |
-|-----------|------------|---------|
+|-----------|------------|
 | Framework | NestJS |
 | Language | TypeScript |
 | Database | MongoDB |
