@@ -1,7 +1,3 @@
-Here is the updated **`tech-design.md`** file with the **Tech Stack** section added.
-
----
-
 # Technical Design Document
 
 ## 1. High-Level Architecture
